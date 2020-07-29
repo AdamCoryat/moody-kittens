@@ -153,7 +153,8 @@ button.btn-special:hover{
   background-color: var(--dark);
 }
 .text-light{
-  color: var(--light)
+  color: var(--light);
+  font-family: 'Amatic SC', cursive;
 }
 
 .btn-dark{

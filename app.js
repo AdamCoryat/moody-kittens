@@ -51,7 +51,7 @@ function drawKittens() {
   let kittenTemplate = ""
   kittens.forEach(kitten => {
     kittenTemplate += `
-    <div class="p-2 card ">
+    <div class="p-2 card text-light bg-dark">
     <img src="https://robohash.org/<${ kitten.name}>?set=set4">
     <h3>Name: ${kitten.name}</h3>
     <p id="mood">Mood: ${kitten.mood}</p>
