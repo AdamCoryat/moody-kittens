@@ -3,7 +3,6 @@
  * @type {Kitten[]}
  */
 let kittens = [];
-let kitten = {};
 loadKittens();
 /**
  * Called when submitting the new Kitten Form
@@ -52,12 +51,12 @@ function drawKittens() {
   kittens.forEach(kitten => {
     kittenTemplate += `
     <div class="p-2 card text-light bg-dark">
-    <img src="https://robohash.org/<${ kitten.name}>?set=set4">
+    <img src="https://robohash.org/<${kitten.name}>?set=set4">
     <h3>Name: ${kitten.name}</h3>
     <p id="mood">Mood: ${kitten.mood}</p>
     <p>Affection: ${kitten.affection}</p>
-    <button onclick="pet('${kitten.id}')">Pet</button>
-    <button>Catnip</button>
+    <button onclick="findValue('${kitten.id}')">Pet</button>
+    <button onclick="catnip('${kitten.id}')">Catnip</button>
     <button class="btn-cancel" onclick="freeKitten('${kitten.id}')">Free Kitteh</button>
     </div>
     `
@@ -94,11 +93,12 @@ function freeKitten(kittenId) {
  * @param {string} id
  */
 function pet(id) {
+  findKittenById(kitten.id);
   let i = Math.floor(Math.random() * 2);
   if (i > .7) {
-    kitten.affection += i;
+    i += kitten.affection;
   } else {
-    kitten.affection -= i;
+    i -= kitten.affection;
   }
   saveKittens();
 }
@@ -110,7 +110,12 @@ function pet(id) {
  * save the kittens
  * @param {string} id
  */
-function catnip(id) { }
+function catnip(id) {
+  findKittenById(kitten.id);
+  kitten.mood = "Tolerant";
+  kitten.affection = 5;
+  saveKittens();
+}
 
 /**
  * Sets the kittens mood based on its affection
@@ -147,6 +152,16 @@ function generateAffection() {
   return (
     Math.floor(Math.random() * 10)
   )
+}
+
+function findValue(id) {
+  let kittenData = JSON.parse(window.localStorage.getItem("kittens"))
+  if (kittenData[0].affection < 1) {
+    kittenData[0].affection++;
+    console.log(kittenData[0].affection);
+  }
+  saveKittens()
+  drawKittens()
 }
 saveKittens();
 drawKittens();
