@@ -17,28 +17,28 @@ loadKittens();
 
 function addKitten(event) {
   event.preventDefault();
-  let form = event.target
+  let form = event.target;
 
   let kitten = {
     id: generateId(),
     name: form.name.value,
     affection: 7,
-    mood: ""
+    mood: "Happy"
   }
-  kittens.push(kitten)
-  saveKittens()
-  form.reset()
+  kittens.push(kitten);
+  saveKittens();
+  form.reset();
 }
 
 function saveKittens() {
-  window.localStorage.setItem("kittens", JSON.stringify(kittens))
-  drawKittens()
+  window.localStorage.setItem("kittens", JSON.stringify(kittens));
+  drawKittens();
 }
 
 function loadKittens() {
-  let kittenData = JSON.parse(window.localStorage.getItem("kittens"))
+  let kittenData = JSON.parse(window.localStorage.getItem("kittens"));
   if (kittenData) {
-    kittens = kittenData
+    kittens = kittenData;
   }
 }
 
@@ -46,22 +46,22 @@ function loadKittens() {
  * Draw all of the kittens to the kittens element
  */
 function drawKittens() {
-  let kittenlistElement = document.getElementById("kittens")
-  let kittenTemplate = ""
+  let kittenlistElement = document.getElementById("kittens");
+  let kittenTemplate = "";
   kittens.forEach(kitten => {
     kittenTemplate += `
-    <div class="p-2 card text-light bg-dark">
+    <div id ="${kitten.id}" class="p-2 card text-light bg-dark shadow kitten">
     <img src="https://robohash.org/<${kitten.name}>?set=set4">
     <h3>Name: ${kitten.name}</h3>
-    <p id="mood">Mood: ${kitten.mood}</p>
+    <p>Mood: ${kitten.mood}</p>
     <p>Affection: ${kitten.affection}</p>
-    <button onclick="findValue('${kitten.id}')">Pet</button>
-    <button onclick="catnip('${kitten.id}')">Catnip</button>
-    <button class="btn-cancel" onclick="freeKitten('${kitten.id}')">Free Kitteh</button>
+    <button  onclick="pet('${kitten.id}')">Pet</button>
+    <button  onclick="catnip('${kitten.id}')">Catnip</button>
+    <button  class="btn-cancel" onclick="freeKitten('${kitten.id}')">Free Kitteh</button>
     </div>
     `
   })
-  kittenlistElement.innerHTML = kittenTemplate
+  kittenlistElement.innerHTML = kittenTemplate;
 }
 
 /**
@@ -74,12 +74,12 @@ function findKittenById(id) {
 }
 
 function freeKitten(kittenId) {
-  let index = kittens.findIndex(kitten => kitten.id == kittenId)
+  let index = kittens.findIndex(kitten => kitten.id == kittenId);
   if (index == -1) {
-    throw new Error("Invalid Kitten")
+    throw new Error("Invalid Kitten");
   }
-  kittens.splice(index, 1)
-  saveKittens()
+  kittens.splice(index, 1);
+  saveKittens();
 }
 
 
@@ -93,13 +93,17 @@ function freeKitten(kittenId) {
  * @param {string} id
  */
 function pet(id) {
-  findKittenById(kitten.id);
+  let kitten = findKittenById(id);
+  if (kitten == null) {
+    throw new Error("Invalid Id" + id);
+  }
   let i = Math.floor(Math.random() * 2);
   if (i > .7) {
-    i += kitten.affection;
+    kitten.affection += 1;
   } else {
-    i -= kitten.affection;
+    kitten.affection -= 1;
   }
+  setKittenMood(kitten);
   saveKittens();
 }
 
@@ -111,9 +115,10 @@ function pet(id) {
  * @param {string} id
  */
 function catnip(id) {
-  findKittenById(kitten.id);
+  let kitten = findKittenById(id);
   kitten.mood = "Tolerant";
-  kitten.affection = 5;
+  kitten.affection = 10;
+  setKittenMood(kitten);
   saveKittens();
 }
 
@@ -123,8 +128,24 @@ function catnip(id) {
  * @param {Kitten} kitten
  */
 function setKittenMood(kitten) {
-  if (kitten.affection > 1) {
-    kitten.mood = "Happy"
+  let kittenElem = document.getElementById(kitten.id).classList;
+  if (kitten.affection > 6) {
+    kitten.mood = "Happy";
+    kittenElem.remove("tolerant");
+    kittenElem.add("happy");
+  } else if (kitten.affection <= 5, kitten.affection >= 4) {
+    kitten.mood = "Tolerant";
+    kittenElem.remove("angry");
+    kittenElem.remove("happy");
+    kittenElem.add("tolerant");
+  } else if (kitten.affection <= 3, kitten.affection >= 1) {
+    kitten.mood = "Angry";
+    kittenElem.remove("tolerant");
+    kittenElem.add("angry");
+  } else if (kitten.affection <= 0) {
+    kitten.mood = "Gone";
+    kittenElem.remove("angry");
+    kittenElem.add("gone");
   }
 }
 
@@ -146,22 +167,6 @@ function generateId() {
     "-" +
     Math.floor(Math.random() * 10000000)
   );
-}
-
-function generateAffection() {
-  return (
-    Math.floor(Math.random() * 10)
-  )
-}
-
-function findValue(id) {
-  let kittenData = JSON.parse(window.localStorage.getItem("kittens"))
-  if (kittenData[0].affection < 1) {
-    kittenData[0].affection++;
-    console.log(kittenData[0].affection);
-  }
-  saveKittens()
-  drawKittens()
 }
 saveKittens();
 drawKittens();
