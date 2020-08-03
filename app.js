@@ -50,14 +50,14 @@ function drawKittens() {
   let kittenTemplate = "";
   kittens.forEach(kitten => {
     kittenTemplate += `
-    <div id ="${kitten.id}" class="p-2 card text-light bg-dark shadow kitten">
+    <div id ="${kitten.id}" class="${kitten.mood} p-2 card text-light bg-dark shadow kitten">
     <img src="https://robohash.org/<${kitten.name}>?set=set4">
     <h3>Name: ${kitten.name}</h3>
     <p>Mood: ${kitten.mood}</p>
     <p>Affection: ${kitten.affection}</p>
-    <button  onclick="pet('${kitten.id}')">Pet</button>
-    <button  onclick="catnip('${kitten.id}')">Catnip</button>
-    <button  class="btn-cancel" onclick="freeKitten('${kitten.id}')">Free Kitteh</button>
+    <button id="pet-button" class="shadow" onclick="pet('${kitten.id}')">Pet</button>
+    <button id="catnip-button" onclick="catnip('${kitten.id}')">Catnip</button>
+    <button name="free-button" class="btn-cancel" onclick="freeKitten('${kitten.id}')">Free Kitteh</button>
     </div>
     `
   })
@@ -117,7 +117,7 @@ function pet(id) {
 function catnip(id) {
   let kitten = findKittenById(id);
   kitten.mood = "Tolerant";
-  kitten.affection = 10;
+  kitten.affection = 5;
   setKittenMood(kitten);
   saveKittens();
 }
@@ -128,24 +128,14 @@ function catnip(id) {
  * @param {Kitten} kitten
  */
 function setKittenMood(kitten) {
-  let kittenElem = document.getElementById(kitten.id).classList;
   if (kitten.affection > 6) {
-    kitten.mood = "Happy";
-    kittenElem.remove("tolerant");
-    kittenElem.add("happy");
+    kitten.mood = "happy";
   } else if (kitten.affection <= 5, kitten.affection >= 4) {
-    kitten.mood = "Tolerant";
-    kittenElem.remove("angry");
-    kittenElem.remove("happy");
-    kittenElem.add("tolerant");
+    kitten.mood = "tolerant";
   } else if (kitten.affection <= 3, kitten.affection >= 1) {
-    kitten.mood = "Angry";
-    kittenElem.remove("tolerant");
-    kittenElem.add("angry");
+    kitten.mood = "angry";
   } else if (kitten.affection <= 0) {
-    kitten.mood = "Gone";
-    kittenElem.remove("angry");
-    kittenElem.add("gone");
+    kitten.mood = "gone";
   }
 }
 
